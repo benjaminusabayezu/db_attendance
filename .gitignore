@@ -1,0 +1,10 @@
+/vendor/
+/node_modules/
+*.log
+.env
+*.env
+config.php
+dbconfig.php
+.vscode/
+.idea/
+.DS_Store
