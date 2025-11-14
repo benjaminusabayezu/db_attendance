@@ -1,23 +1,13 @@
 <?php
+include('header.php');
+
 // Database connection settings
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$database = 'db_attendance';
-
-// Create connection
-$conn = new mysqli($host, $user, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'config.php';
 
 // Query to fetch data
 $sql = "SELECT attendEmpId, emp_code, fname, lname, role, time FROM attended_emp";
-$result = $conn->query($sql);
+$result = $connect->query($sql);
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +22,7 @@ $result = $conn->query($sql);
             border-collapse: collapse;
              width: 80%;
               margin: 20px auto; 
+              padding: 20px;
           }
         th, td 
         { 
@@ -52,11 +43,18 @@ $result = $conn->query($sql);
     }
     a{
         text-decoration: none;
+
+    }
+    hr{
+        width: 40%;
+        
+        border: 1px solid #f2f2f2;
     }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Employee Attendance Records</h2>
+    <h2 style="text-align:center;padding: 20px;">Employee Attendance Records</h2>
+    <hr>
 
     <table>
         <tr>
@@ -81,7 +79,7 @@ $result = $conn->query($sql);
                         <td><?= $row['time']?></td>
                         <td>
     <a href='update_att.php?id=<?php echo $row['attendEmpId']; ?>'>Update</a> |
-    <a href='delete_att.php?id=<?php echo $row['attendEmpId']; ?>' onclick="return confirm('This actiion can\'t be undone.')">Clear</a>
+    <a href='delete_att.php?id=<?php echo $row['attendEmpId']; ?>' onclick="getElementById('deleteModal').style.display='block'">Clear</a>
 </td>
 
 
@@ -92,11 +90,13 @@ $result = $conn->query($sql);
         } else {
             echo "<tr><td colspan='6'>No one attended!</td></tr>";
         }
-        $conn->close();
+        $connect->close();
         ?>
         <tr>
-            <td><button onclick="if(confirm('You are about to go back to mark attendance.')) { window.location.href='Attendance.php'; }">Back to Attend</button></td>
+            <td><button onclick="if(confirm('Back to attendance.')) { window.location.href='Attendance.php'; }">Back to Attend</button></td>
         </tr>
     </table>
+  
+
 </body>
 </html>

@@ -1,25 +1,15 @@
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "db_attendance";
+require_once 'config.php';
 
-$conn = new mysqli($servername, $username, $password, $database);
-
-
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-$employees = $conn->query("SELECT emp_id, emp_code, fname, lname FROM employee");
+$employees = $connect->query("SELECT emp_id, emp_code, fname, lname FROM employee");
 
 
 if (isset($_POST['submit'])) {
     $emp_id = $_POST['emp_id'];
 
     // Get full employee info
-    $emp = $conn->query("SELECT emp_code, fname, lname, role FROM employee WHERE emp_id = '$emp_id'")->fetch_assoc();
+    $emp = $connect->query("SELECT emp_code, fname, lname, role FROM employee WHERE emp_id = '$emp_id'")->fetch_assoc();
 
     if ($emp) {
         $emp_code = $emp['emp_code'];
@@ -28,7 +18,7 @@ if (isset($_POST['submit'])) {
         $role = $emp['role'];
 
         // Insert into attended_emp table
-        $insert = $conn->prepare("INSERT INTO attended_emp (emp_code, fname, lname, role) VALUES (?, ?, ?, ?)");
+        $insert = $connect->prepare("INSERT INTO attended_emp (emp_code, fname, lname, role) VALUES (?, ?, ?, ?)");
         $insert->bind_param("ssss", $emp_code, $fname, $lname, $role);
 
         if ($insert->execute()) {
@@ -41,6 +31,7 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+<!** html form to send employee credential*>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +57,7 @@ if (isset($_POST['submit'])) {
     select{ width: 100%; padding: 10px; margin: 10px 0;
      }
     button{
-    	width: 100%; padding: 12px; margin: 10px 0;
+    	width: 100%; padding: 10px; margin: 10px 0;
     	background: #200900a6;
     	border: none;
     	border-radius: 2px;

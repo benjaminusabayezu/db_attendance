@@ -1,14 +1,6 @@
 <?php
-$servername="localhost";
-$user="root";
-$password="";
-$database="db_attendance";
-
-//creating connection.
-$dbcon= new mysqli($servername,$user,$password,$database);
- if ($dbcon->connect_error) {
- 	die("Connection failed".dbcon->connect_error);
- } 
+include ('header.php');
+require_once 'config.php';
 
  $id=$_GET['id'];
 if ($_SERVER['REQUEST_METHOD']=='POST') {
@@ -22,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
                SET emp_code=?, fname=?, lname=?, role=?, time=? 
                WHERE attendEmpId=?";
 
-    $stmt = $dbcon->prepare($update);
+    $stmt = $connect->prepare($update);
     if (!$stmt) {
-        die("Prepare failed: " . $dbcon->error);
+        die("Prepare failed: " . $connect->error);
     }
 
     $stmt->bind_param("sssssi", $code, $fname, $lname, $role, $time, $id);
@@ -38,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 }
  else {
     $sql = "SELECT * FROM attended_emp WHERE attendEmpId=?";
-    $stmt = $dbcon->prepare($sql);
+    $stmt = $connect->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -52,31 +44,119 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 	<title>update</title>
 	<link rel="icon" type="image/x-icon" href="attendance.png">
 <style>
-	    body { 
-    	font-family: Aptos; 
-    	margin: 140px 420px; 
-    	background: #200900a6; 
-    	color: #fff;
-    }
-    form { 
-    	background: #fff; 
-    	padding: 20px; 
-    	border-radius: 8px; 
-    	width: 370px; 
-    	color:#200900a6 ;
-    }
-    select{ width: 100%; padding: 10px; margin: 10px 0;
-     }
-    input{
-    	width: 94%; padding: 12px; margin: 10px 0;
-    	background: #200900a6;
-    	border: none;
-    	border-radius: 2px;
-    	color: #fff;
-    }
-    input[type=submit]{
-    	width: 100%;
-    }
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #dadbd9;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        form {
+            background-color: #dbd7d5;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 5% auto;
+        }
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #6c757d;
+        }
+        form input[type="text"],
+        form input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        form input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        form .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        form button {
+            width: 48%;
+            padding: 12px;
+            margin-right: 4%;
+            border: none;
+            border-radius: 5px;
+            background-color: #996d51;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        form button:last-child {
+            margin-right: 0;
+            background-color: #6c757d;
+        }
+        form button:hover {
+            opacity: 0.9;
+        }
+        a{
+            text-decoration: none;
+            font-weight: bold;
+            color: #996d51;
+        }
+        a:hover{
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        h3{
+            padding: 12px;
+            margin: 4px;
+            color: #6c757d;
+        }
+        hr{
+            width: 100%;
+            border: 1px solid #6c757d;
+            margin: 2px;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #dbd7d5;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
 </style>
 </head>
 <body>
@@ -86,14 +166,14 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
         Last Name: <input type="text" name="lname" value="<?= $row['lname'] ?>"><br>
         Role: <input type="text" name="role" value="<?= $row['role'] ?>"><br>
         Time: <input type="text" name="time" value="<?= $row['time'] ?>"><br>
-        <input type="submit" value="Update">
+       <button type="submit">update</button>
     </form>
 
 </body>
 </html>
 <?php
 }
-$dbcon->close();
+$connect->close();
 ?>
 
 
